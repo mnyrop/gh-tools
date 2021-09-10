@@ -11,7 +11,9 @@ namespace :get do
     client = Octokit::Client.new access_token: ENV['TOKEN']
     client.auto_paginate = true
     issues = client.list_issues ENV['REPO'], state: 'all'
-    issues.each do |i|
+    issues.each do |i| # iterate through issues
+      
+      # temp inspect
       puts i.title
       puts i.user.login
       puts i.number
@@ -22,11 +24,18 @@ namespace :get do
       puts i.updated_at
       puts i.closed_at
       puts i.body
-      puts '---'
-      puts "has comments!" if i.comments >= 0
-      puts "===="
+      
+      if i.comments >= 0
+        puts "has comments!" 
+        comments = Octokit.issue_comments("octokit/octokit.rb", i.number)
+        comments.each do |c|
+          puts c.inspect
+        end
+      end
+      
+      
+      # TO DO
+      # Add info to hashes and spit out a CSV instead of printing to stdout
     end
-
-    # Octokit.issue_comments("octokit/octokit.rb", "25")
   end
 end
